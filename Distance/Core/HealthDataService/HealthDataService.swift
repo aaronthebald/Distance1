@@ -13,7 +13,7 @@ class HealthDataService: ObservableObject {
     @Published var timeFrame: startOptions = .today
     
     var totalDistance = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
-    let healthStore: HKHealthStore = HKHealthStore()
+    let healthStore = HKHealthStore()
     let statistics: HKStatistics? = nil
     let lastWeek = Calendar.current.date(byAdding: .day, value:  -6, to: Date())
     
@@ -32,6 +32,21 @@ class HealthDataService: ObservableObject {
         }
     }
     
+    func requestAccess() {
+        let read: Set = [
+            HKQuantityType(.distanceWalkingRunning)
+        ]
+        healthStore.requestAuthorization(toShare: .none, read: read) { success, error in
+            if let error = error {
+                print("There was an error \(error)")
+            } else {
+                print("There was no error")
+            }
+        }
+        print("test ran")
+    }
+    
+    
     func fetchStats() {
         let now = Date()
         let startOfDay = setTimeFrame(start: timeFrame)
@@ -47,18 +62,5 @@ class HealthDataService: ObservableObject {
             }
         }
         healthStore.execute(query)
-    }
-    
-    
-    func requestAccess() {
-        let typesToRead: Set = [
-            HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
-        ]
-        
-        healthStore.requestAuthorization(toShare: .none, read: typesToRead) { (success, error) in
-            if let error = error {
-                print("Error requesting access to HealthKit \(error)")
-            }
-        }
     }
 }

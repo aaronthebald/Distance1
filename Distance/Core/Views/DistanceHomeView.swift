@@ -16,7 +16,6 @@ struct DistanceHomeView: View {
             HStack {
                 Button {
                     vm.timeFrame = .thisMonth
-                    print("I made a change")
                 } label: {
                     Text("This month")
                 }
@@ -33,6 +32,10 @@ struct DistanceHomeView: View {
                     Text("Today")
                 }
             }
+            .onAppear {
+                vm.requestAccess()
+                print("OnAppear ran")
+            }
 
             
             Text("Miles walked:")
@@ -42,10 +45,8 @@ struct DistanceHomeView: View {
             } label: {
                 Text("Click here")
             }
-            .onAppear {
-                vm.requestAccess()
-            }
         }
+        
     }
 }
 
