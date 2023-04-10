@@ -13,6 +13,8 @@
 		025489EA29DF638100ECE9D9 /* DistanceHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025489E929DF638100ECE9D9 /* DistanceHomeView.swift */; };
 		025489EC29DF63AA00ECE9D9 /* HealthDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025489EB29DF63AA00ECE9D9 /* HealthDataService.swift */; };
 		025489EF29E0BE4A00ECE9D9 /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025489EE29E0BE4A00ECE9D9 /* Double.swift */; };
+		025489F229E47F0500ECE9D9 /* SpanModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025489F129E47F0500ECE9D9 /* SpanModel.swift */; };
+		025489F429E484E400ECE9D9 /* SpansServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025489F329E484E400ECE9D9 /* SpansServices.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		025489E929DF638100ECE9D9 /* DistanceHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceHomeView.swift; sourceTree = "<group>"; };
 		025489EB29DF63AA00ECE9D9 /* HealthDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataService.swift; sourceTree = "<group>"; };
 		025489EE29E0BE4A00ECE9D9 /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
+		025489F129E47F0500ECE9D9 /* SpanModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanModel.swift; sourceTree = "<group>"; };
+		025489F329E484E400ECE9D9 /* SpansServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpansServices.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +60,7 @@
 		025489D629DF626400ECE9D9 /* Distance */ = {
 			isa = PBXGroup;
 			children = (
+				025489F029E47EC100ECE9D9 /* Models */,
 				025489ED29E0BE3500ECE9D9 /* Extenstions */,
 				025489D729DF626400ECE9D9 /* DistanceApp.swift */,
 				025489E529DF62E800ECE9D9 /* Distance.entitlements */,
@@ -78,17 +83,18 @@
 			isa = PBXGroup;
 			children = (
 				025489E829DF636900ECE9D9 /* Views */,
-				025489E729DF634E00ECE9D9 /* HealthDataService */,
+				025489E729DF634E00ECE9D9 /* Services */,
 			);
 			path = Core;
 			sourceTree = "<group>";
 		};
-		025489E729DF634E00ECE9D9 /* HealthDataService */ = {
+		025489E729DF634E00ECE9D9 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				025489EB29DF63AA00ECE9D9 /* HealthDataService.swift */,
+				025489F329E484E400ECE9D9 /* SpansServices.swift */,
 			);
-			path = HealthDataService;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		025489E829DF636900ECE9D9 /* Views */ = {
@@ -105,6 +111,14 @@
 				025489EE29E0BE4A00ECE9D9 /* Double.swift */,
 			);
 			path = Extenstions;
+			sourceTree = "<group>";
+		};
+		025489F029E47EC100ECE9D9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				025489F129E47F0500ECE9D9 /* SpanModel.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -178,9 +192,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				025489EA29DF638100ECE9D9 /* DistanceHomeView.swift in Sources */,
+				025489F429E484E400ECE9D9 /* SpansServices.swift in Sources */,
 				025489EC29DF63AA00ECE9D9 /* HealthDataService.swift in Sources */,
 				025489EF29E0BE4A00ECE9D9 /* Double.swift in Sources */,
 				025489D829DF626400ECE9D9 /* DistanceApp.swift in Sources */,
+				025489F229E47F0500ECE9D9 /* SpanModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
