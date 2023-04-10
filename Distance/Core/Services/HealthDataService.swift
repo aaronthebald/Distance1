@@ -14,8 +14,6 @@ class HealthDataService: ObservableObject {
     
     var totalDistance = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
     let healthStore = HKHealthStore()
-    let statistics: HKStatistics? = nil
-    let lastWeek = Calendar.current.date(byAdding: .day, value:  -6, to: Date())
     
     enum startOptions {
     case today, thisWeek, thisMonth
@@ -62,5 +60,30 @@ class HealthDataService: ObservableObject {
             }
         }
         healthStore.execute(query)
+    }
+    
+    func backgroundQuery() {
+        /*
+         let now = Date()
+         let typeToRead = HKQuantityType(.distanceWalkingRunning)
+         let startOfDay = setTimeFrame(start: timeFrame)
+         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
+         */
+        let now = Date()
+        let typeToRead = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
+        let startOfDay = setTimeFrame(start: timeFrame)
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
+
+        let observerQuery = HKObserverQuery(sampleType: typeToRead, predicate: predicate) { (query, completionHandler, errorOrNil) in
+            guard errorOrNil == nil else {
+                print("Error: \(errorOrNil!.localizedDescription)")
+                return
+            }
+            self.fetchStats()
+            // Perform any necessary actions when the observer query detects a change
+            print("Observer query detected a change")
+            completionHandler()
+        }
+        healthStore.execute(observerQuery)
     }
 }
