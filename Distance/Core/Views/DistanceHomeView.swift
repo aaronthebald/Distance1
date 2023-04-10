@@ -32,10 +32,6 @@ struct DistanceHomeView: View {
                     Text("Today")
                 }
             }
-            .onAppear {
-                vm.requestAccess()
-                print("OnAppear ran")
-            }
 
             
             Text("Miles walked:")
@@ -45,6 +41,9 @@ struct DistanceHomeView: View {
             } label: {
                 Text("Click here")
             }
+        }
+        .onAppear {
+            NotificationsManager.instance.requestAuthorization()
         }
         
     }

@@ -12,6 +12,12 @@ class HealthDataService: ObservableObject {
     @Published var totalMiles: Double = 0.rounded(.toNearestOrEven)
     @Published var timeFrame: startOptions = .today
     
+    init() {
+        requestAccess()
+        fetchStats()
+        backgroundQuery()
+    }
+    
     var totalDistance = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
     let healthStore = HKHealthStore()
     
@@ -38,10 +44,10 @@ class HealthDataService: ObservableObject {
             if let error = error {
                 print("There was an error \(error)")
             } else {
-                print("There was no error")
+                print("Access to healthStore granted")
             }
         }
-        print("test ran")
+        enableBackgroundDelivery()
     }
     
     
@@ -53,7 +59,7 @@ class HealthDataService: ObservableObject {
             DispatchQueue.main.async {
                 if let sum = result?.sumQuantity() {
                     self.totalMiles = sum.doubleValue(for: HKUnit.mile())
-                    print("Step count for today: \(self.totalMiles)")
+                    print("Fetch Stats ran")
                 } else {
                     print("Error fetching step count: \(error?.localizedDescription ?? "Unknown error")")
                 }
@@ -62,25 +68,33 @@ class HealthDataService: ObservableObject {
         healthStore.execute(query)
     }
     
+    func enableBackgroundDelivery() {
+        healthStore.enableBackgroundDelivery(for: HKQuantityType(.distanceWalkingRunning), frequency: .daily) { success, error in
+            if let error = error {
+                print("there was an error \(error)")
+            }
+            if success {
+                print("Permission for background queries granted")
+            }
+        }
+    }
+    
     func backgroundQuery() {
-        /*
-         let now = Date()
-         let typeToRead = HKQuantityType(.distanceWalkingRunning)
-         let startOfDay = setTimeFrame(start: timeFrame)
-         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
-         */
-        let now = Date()
+//        let now = Date()
         let typeToRead = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
-        let startOfDay = setTimeFrame(start: timeFrame)
-        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
+//        let startOfDay = setTimeFrame(start: timeFrame)
+        let newPredicate = HKQuery.predicateForObjects(from: .default())
+        
+//        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
 
-        let observerQuery = HKObserverQuery(sampleType: typeToRead, predicate: predicate) { (query, completionHandler, errorOrNil) in
+        let observerQuery = HKObserverQuery(sampleType: typeToRead, predicate: newPredicate) { (query, completionHandler, errorOrNil) in
             guard errorOrNil == nil else {
                 print("Error: \(errorOrNil!.localizedDescription)")
                 return
             }
-            self.fetchStats()
             // Perform any necessary actions when the observer query detects a change
+            self.fetchStats()
+            NotificationsManager.instance.scheduleNotification(miles: self.totalMiles)
             print("Observer query detected a change")
             completionHandler()
         }
