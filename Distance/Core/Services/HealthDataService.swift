@@ -94,10 +94,19 @@ class HealthDataService: ObservableObject {
             }
             // Perform any necessary actions when the observer query detects a change
             self.fetchStats()
-            NotificationsManager.instance.scheduleNotification(miles: self.totalMiles)
+            self.getNotification()
             print("Observer query detected a change")
             completionHandler()
         }
         healthStore.execute(observerQuery)
+    }
+    
+    func getNotification() {
+        
+        if totalMiles >= 2.0 {
+            NotificationsManager.instance.scheduleNotification(miles: self.totalMiles)
+        } else {
+            return
+        }
     }
 }

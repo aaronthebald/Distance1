@@ -28,11 +28,11 @@ class NotificationsManager {
         
         // Step 2: Define the notification content
         let content = UNMutableNotificationContent()
-        content.title = "You have walked \(miles.asDistanceWith2Decimals())!"
+        content.title = "You have walked \(miles.asDistanceWith2Decimals()) miles!"
         
         
         // Step 3: Define the trigger based on the specified date
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10.0, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
         
         // Step 4: Create a request with the specified content and trigger
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
