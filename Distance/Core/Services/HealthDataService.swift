@@ -11,8 +11,11 @@ import HealthKit
 class HealthDataService: ObservableObject {
     @Published var totalMiles: Double = 0.rounded(.toNearestOrEven)
     @Published var timeFrame: startOptions = .today
+    @Published var spans: [SpanModel] = []
+    @Published var nearestSpan: SpanModel?
     
     init() {
+        spans = SpansServices().getSpans()
         requestAccess()
         fetchStats()
         backgroundQuery()
@@ -69,7 +72,7 @@ class HealthDataService: ObservableObject {
     }
     
     func enableBackgroundDelivery() {
-        healthStore.enableBackgroundDelivery(for: HKQuantityType(.distanceWalkingRunning), frequency: .daily) { success, error in
+        healthStore.enableBackgroundDelivery(for: HKQuantityType(.distanceWalkingRunning), frequency: .hourly) { success, error in
             if let error = error {
                 print("there was an error \(error)")
             }
@@ -94,7 +97,7 @@ class HealthDataService: ObservableObject {
             }
             // Perform any necessary actions when the observer query detects a change
             self.fetchStats()
-            self.getNotification()
+            self.getNearestSpan()
             print("Observer query detected a change")
             completionHandler()
         }
@@ -102,11 +105,18 @@ class HealthDataService: ObservableObject {
     }
     
     func getNotification() {
-        
         if totalMiles >= 2.0 {
             NotificationsManager.instance.scheduleNotification(miles: self.totalMiles)
         } else {
             return
+        }
+    }
+    
+    func getNearestSpan() {
+        if let nearestSpan = spans.first(where: {$0.length <= totalMiles}) {
+            NotificationsManager.instance.distanceNotification(span: nearestSpan)
+        } else {
+            print("You havent walked enough to get a notification yet...")
         }
     }
 }

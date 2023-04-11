@@ -22,6 +22,22 @@ class NotificationsManager {
         }
     }
     
+    func distanceNotification(span: SpanModel) {
+        let center = UNUserNotificationCenter.current()
+        let content = UNMutableNotificationContent()
+        content.title = "Wow you're crushing it!"
+        content.body = "You've walked the length of \(span.name)"
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        
+        center.add(request) { error in
+            if let error = error {
+                print("Error requesting distance notification \(error)")
+            }
+        }
+    }
+    
     func scheduleNotification(miles: Double) {
         // Step 1: Create a UNUserNotificationCenter instance
         let center = UNUserNotificationCenter.current()

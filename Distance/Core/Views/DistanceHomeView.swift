@@ -41,6 +41,13 @@ struct DistanceHomeView: View {
             } label: {
                 Text("Click here")
             }
+            
+            Button {
+                NotificationsManager.instance.scheduleNotification(miles: vm.totalMiles)
+            } label: {
+                Text("Schedule Notification")
+            }
+
         }
         .onAppear {
             NotificationsManager.instance.requestAuthorization()
