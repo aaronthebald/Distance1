@@ -16,6 +16,8 @@ class HealthDataService: ObservableObject {
     
     init() {
         spans = SpansServices().getSpans()
+        spans.sort(by: { $0.length < $1.length})
+        print(spans.description)
         requestAccess()
         fetchStats()
         backgroundQuery()
@@ -109,6 +111,7 @@ class HealthDataService: ObservableObject {
     // Itterates over the array of spans to find the closest one to the totalMiles var and schedules notification with that info
     func getNearestSpan() {
         if let nearestSpan = spans.last(where: {$0.length <= totalMiles}) {
+            print(nearestSpan.name)
             NotificationsManager.instance.distanceNotification(span: nearestSpan)
         } else {
             print("You havent walked enough to get a notification yet...")

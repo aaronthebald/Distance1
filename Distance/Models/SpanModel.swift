@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SpanModel {
+struct SpanModel: Hashable {
     let name: String
     let length: Double
 }
