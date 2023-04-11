@@ -28,6 +28,8 @@ class HealthDataService: ObservableObject {
     case today, thisWeek, thisMonth
     }
     
+    
+    // Function to change start paramiter
     private func setTimeFrame(start: startOptions) -> Date {
         switch start {
         case .today :
@@ -39,6 +41,7 @@ class HealthDataService: ObservableObject {
         }
     }
     
+    // requests access to the healthStore
     func requestAccess() {
         let read: Set = [
             HKQuantityType(.distanceWalkingRunning)
@@ -53,7 +56,7 @@ class HealthDataService: ObservableObject {
         enableBackgroundDelivery()
     }
     
-    
+    // reads the healthStore and updates published varibles
     func fetchStats() {
         let now = Date()
         let startOfDay = setTimeFrame(start: timeFrame)
@@ -71,6 +74,7 @@ class HealthDataService: ObservableObject {
         healthStore.execute(query)
     }
     
+    // grants permission to moniter healthStore in the background
     func enableBackgroundDelivery() {
         healthStore.enableBackgroundDelivery(for: HKQuantityType(.distanceWalkingRunning), frequency: .hourly) { success, error in
             if let error = error {
@@ -82,13 +86,11 @@ class HealthDataService: ObservableObject {
         }
     }
     
+    // Moniters healthStore for changes to the HKQuanttyType distanceWalkingRunning
     func backgroundQuery() {
-//        let now = Date()
         let typeToRead = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
-//        let startOfDay = setTimeFrame(start: timeFrame)
         let newPredicate = HKQuery.predicateForObjects(from: .default())
         
-//        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
 
         let observerQuery = HKObserverQuery(sampleType: typeToRead, predicate: newPredicate) { (query, completionHandler, errorOrNil) in
             guard errorOrNil == nil else {
@@ -104,16 +106,9 @@ class HealthDataService: ObservableObject {
         healthStore.execute(observerQuery)
     }
     
-    func getNotification() {
-        if totalMiles >= 2.0 {
-            NotificationsManager.instance.scheduleNotification(miles: self.totalMiles)
-        } else {
-            return
-        }
-    }
-    
+    // Itterates over the array of spans to find the closest one to the totalMiles var and schedules notification with that info
     func getNearestSpan() {
-        if let nearestSpan = spans.first(where: {$0.length <= totalMiles}) {
+        if let nearestSpan = spans.last(where: {$0.length <= totalMiles}) {
             NotificationsManager.instance.distanceNotification(span: nearestSpan)
         } else {
             print("You havent walked enough to get a notification yet...")
