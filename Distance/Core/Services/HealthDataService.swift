@@ -90,7 +90,7 @@ class HealthDataService: ObservableObject {
     
     // Moniters healthStore for changes to the HKQuanttyType distanceWalkingRunning
     func backgroundQuery() {
-        let typeToRead = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
+        let typeToRead = HKQuantityType(.distanceWalkingRunning)
         let newPredicate = HKQuery.predicateForObjects(from: .default())
         
 
