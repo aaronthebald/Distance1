@@ -27,6 +27,8 @@ class NotificationsManager {
         let content = UNMutableNotificationContent()
         content.title = "Wow you're crushing it!"
         content.body = "You've walked the length of \(span.name)"
+        content.sound = UNNotificationSound.default
+        content.badge = 1
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)

@@ -13,27 +13,8 @@ struct DistanceHomeView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                Button {
-                    vm.timeFrame = .thisMonth
-                } label: {
-                    Text("This month")
-                }
-                
-                Button {
-                    vm.timeFrame = .thisWeek
-                } label: {
-                    Text("This week")
-                }
-                
-                Button {
-                    vm.timeFrame = .today
-                } label: {
-                    Text("Today")
-                }
-            }
-
-            
+            Text("Queries ran:")
+            Text("\(vm.queriesRan)")
             Text("Miles walked:")
             Text(vm.totalMiles.asDistanceWith2Decimals())
             Button {
@@ -46,6 +27,9 @@ struct DistanceHomeView: View {
                 NotificationsManager.instance.scheduleNotification(miles: vm.totalMiles)
             } label: {
                 Text("Schedule Notification")
+            }
+            ForEach(vm.completedSpans, id: \.self) { span in
+                Text("\(span.name): \(span.length.asDistanceWith2Decimals())")
             }
 
         }

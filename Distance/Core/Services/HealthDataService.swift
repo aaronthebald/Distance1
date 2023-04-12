@@ -13,6 +13,8 @@ class HealthDataService: ObservableObject {
     @Published var timeFrame: startOptions = .today
     @Published var spans: [SpanModel] = []
     @Published var nearestSpan: SpanModel?
+    @Published var completedSpans: [SpanModel] = []
+    @Published var queriesRan: Int = 0
     
     init() {
         spans = SpansServices().getSpans()
@@ -100,10 +102,13 @@ class HealthDataService: ObservableObject {
                 return
             }
             // Perform any necessary actions when the observer query detects a change
-            self.fetchStats()
-            self.getNearestSpan()
-            print("Observer query detected a change")
-            completionHandler()
+            DispatchQueue.main.sync {
+                self.fetchStats()
+                self.queriesRan += 1
+                self.getNearestSpan()
+                print("Observer query detected a change")
+                completionHandler()
+            }
         }
         healthStore.execute(observerQuery)
     }
@@ -112,6 +117,7 @@ class HealthDataService: ObservableObject {
     func getNearestSpan() {
         if let nearestSpan = spans.last(where: {$0.length <= totalMiles}) {
             print(nearestSpan.name)
+            completedSpans.append(nearestSpan)
             NotificationsManager.instance.distanceNotification(span: nearestSpan)
         } else {
             print("You havent walked enough to get a notification yet...")
