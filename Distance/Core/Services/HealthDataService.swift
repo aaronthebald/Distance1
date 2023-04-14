@@ -117,7 +117,7 @@ class HealthDataService: ObservableObject {
     func getNearestSpan() {
         if let nearestSpan = spans.last(where: {$0.length <= totalMiles}) {
             print(nearestSpan.name)
-            completedSpans.append(nearestSpan)
+            self.nearestSpan = nearestSpan
             NotificationsManager.instance.distanceNotification(span: nearestSpan)
         } else {
             print("You havent walked enough to get a notification yet...")

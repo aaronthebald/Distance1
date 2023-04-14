@@ -11,6 +11,7 @@ import HealthKit
 struct DistanceHomeView: View {
     @StateObject var vm: HealthDataService = HealthDataService()
     
+    
     var body: some View {
         VStack {
             Text("Queries ran:")
@@ -28,10 +29,12 @@ struct DistanceHomeView: View {
             } label: {
                 Text("Schedule Notification")
             }
-            ForEach(vm.completedSpans, id: \.self) { span in
-                Text("\(span.name): \(span.length.asDistanceWith2Decimals())")
+            if let nearestSpan = vm.nearestSpan {
+                HStack {
+                    Text("Wow! you have walked as far as: ")
+                    Text(nearestSpan.name)
+                }
             }
-
         }
         .onAppear {
             NotificationsManager.instance.requestAuthorization()
