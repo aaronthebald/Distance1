@@ -26,9 +26,21 @@ class SpansServices {
         let item15 = SpanModel(name: "The length of the Grand Canyon", length: 277.0)
         let item16 = SpanModel(name: "The width of the Grand Canyon", length: 18.0)
         let item17 = SpanModel(name: "A 5K", length: 3.10)
+        let item18 = SpanModel(name: "5 miles", length: 5.0)
+        let item19 = SpanModel(name: "5.5 Miles", length: 5.5)
+        let item20 = SpanModel(name: "6 Miles", length: 6.0)
+        let item21 = SpanModel(name: "6.5 Miles", length: 6.5)
+        let item22 = SpanModel(name: "7 Miles", length: 7.0)
+        let item23 = SpanModel(name: "7.5 Miles", length: 7.5)
+        let item24 = SpanModel(name: "8 Miles", length: 8.0)
+        let item25 = SpanModel(name: "8.5 Miles", length: 8.5)
+        let item26 = SpanModel(name: "9 Miles", length: 9.0)
+        let item27 = SpanModel(name: "9.5 Miles", length: 9.5)
+        let item28 = SpanModel(name: "10 Miles", length: 10.0)
         
         
-        let itemsArray = [ item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, item14, item15, item16, item17]
+        
+        let itemsArray = [ item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, item14, item15, item16, item17, item18, item19, item20, item21, item22, item23, item24, item25, item26, item27, item28]
         return itemsArray
     }
 }

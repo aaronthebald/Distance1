@@ -23,6 +23,7 @@ class HealthDataService: ObservableObject {
         requestAccess()
         fetchStats()
         backgroundQuery()
+        print("Init ran")
     }
     
     var totalDistance = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
@@ -80,7 +81,7 @@ class HealthDataService: ObservableObject {
     
     // grants permission to moniter healthStore in the background
     func enableBackgroundDelivery() {
-        healthStore.enableBackgroundDelivery(for: HKQuantityType(.distanceWalkingRunning), frequency: .hourly) { success, error in
+        healthStore.enableBackgroundDelivery(for: HKQuantityType(.distanceWalkingRunning), frequency: .immediate) { success, error in
             if let error = error {
                 print("there was an error \(error)")
             }
