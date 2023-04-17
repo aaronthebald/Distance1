@@ -22,11 +22,11 @@ class NotificationsManager {
         }
     }
     
-    func distanceNotification(span: SpanModel) {
+    func distanceNotification(span: SpanModel, timeFrame: String) {
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
         content.title = "Wow you're crushing it!"
-        content.body = "You've walked the length of \(span.name)"
+        content.body = "\(timeFrame)You've walked the length of \(span.name)"
         content.sound = UNNotificationSound.default
         content.badge = 1
         

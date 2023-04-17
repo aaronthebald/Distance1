@@ -9,6 +9,11 @@ import SwiftUI
 
 @main
 struct DistanceApp: App {
+    
+    init() {
+        HealthDataService().enableBackgroundDelivery()
+    }
+    
     var body: some Scene {
         WindowGroup {
             DistanceHomeView()
