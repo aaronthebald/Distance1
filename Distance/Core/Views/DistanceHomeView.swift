@@ -10,6 +10,7 @@ import HealthKit
 
 struct DistanceHomeView: View {
     @StateObject var vm: HealthDataService = HealthDataService()
+    
 
     var body: some View {
         NavigationStack {
@@ -18,20 +19,38 @@ struct DistanceHomeView: View {
                     .listRowSeparator(.hidden)
                     .listRowBackground(rowBackground)
                 weekRow
+                    .onTapGesture {
+                        print("tap regestured")
+                        vm.weekSF.toggle()
+                        vm.fetchWeekStats()
+                        
+                    }
                     .listRowSeparator(.hidden)
                     .listRowBackground(rowBackground)
                 monthRow
+                    .onTapGesture {
+                        vm.monthSF.toggle()
+                        vm.fetchMonthStats()
+                    }
                     .listRowSeparator(.hidden)
                     .listRowBackground(rowBackground)
                 yearRow
+                    .onTapGesture {
+                        print("tapped")
+                        vm.yearSF.toggle()
+                        vm.fetchYearStats()
+                        print(vm.yearMiles)
+                    }
                     .listRowSeparator(.hidden)
                     .listRowBackground(rowBackground)
                 
                                     
             }
+            .refreshable {
+                vm.fetchAllStats()
+            }
             .navigationTitle("Distance")
             }
-        
         .onAppear {
             NotificationsManager.instance.requestAuthorization()
         }
@@ -65,7 +84,7 @@ extension DistanceHomeView {
                 Text("Miles")
                     .font(.footnote)
                 Spacer()
-                Text(vm.todaysSpan?.name ?? "Error")
+                Text(vm.todaysSpan?.name ?? "")
                     .font(.subheadline)
             }
             
@@ -82,7 +101,7 @@ extension DistanceHomeView {
                 Image(systemName: "figure.walk.circle")
                     .resizable()
                     .frame(width: 25)
-                Text("This Week:")
+                Text(vm.weekSF ? "This Week So Far:" : "The Past Week:")
                     .font(.title2)
                 Spacer()
             }
@@ -94,7 +113,7 @@ extension DistanceHomeView {
                 Text("Miles")
                     .font(.footnote)
                 Spacer()
-                Text(vm.weeksSpan?.name ?? "Error")
+                Text(vm.weeksSpan?.name ?? "")
                     .font(.subheadline)
             }
             
@@ -110,7 +129,7 @@ extension DistanceHomeView {
                 Image(systemName: "figure.walk.circle")
                     .resizable()
                     .frame(width: 25)
-                Text("This Month:")
+                Text(vm.monthSF ? "This Month So Far:" : "The Past Month:")
                     .font(.title2)
                 Spacer()
             }
@@ -122,7 +141,7 @@ extension DistanceHomeView {
                 Text("Miles")
                     .font(.footnote)
                 Spacer()
-                Text(vm.monthsSpan?.name ?? "Error")
+                Text(vm.monthsSpan?.name ?? "")
                     .font(.subheadline)
             }
         }
@@ -137,7 +156,7 @@ extension DistanceHomeView {
                 Image(systemName: "figure.walk.circle")
                     .resizable()
                     .frame(width: 25)
-                Text("This Year:")
+                Text(vm.yearSF ? "This Year So Far:" : "The Past Year:")
                     .font(.title2)
                 Spacer()
             }
@@ -149,7 +168,7 @@ extension DistanceHomeView {
                 Text("Miles")
                     .font(.footnote)
                 Spacer()
-                Text(vm.yearsSpan?.name ?? "Error")
+                Text(vm.yearsSpan?.name ?? "")
                     .font(.subheadline)
             }
         }
@@ -167,81 +186,3 @@ extension DistanceHomeView {
     
     }
 
-
-
-//extension DistanceHomeView {
-//
-//    private var timeStack: some View {
-//        VStack(alignment: .leading) {
-//            Text("Today: \(vm.todaysMiles.asDistanceWith2Decimals())")
-//            Text("This Week: \(vm.weekMiles.asDistanceWith2Decimals())")
-//            Text("This Month: \(vm.monthMiles.asDistanceWith2Decimals())")
-//            Text("This Year: \(vm.yearMiles.asDistanceWith2Decimals())")
-//        }
-//    }
-//
-//    private var spanStack: some View {
-//        VStack(alignment: .leading) {
-//            VStack(alignment: .leading) {
-//                Image(systemName: "compass.drawing")
-//                Text(vm.todaysSpan?.name ?? "Error")
-//            }
-//            VStack(alignment: .leading) {
-//                Image(systemName: "compass.drawing")
-//                Text(vm.weeksSpan?.name ?? "Error")
-//            }
-//            VStack(alignment: .leading) {
-//                Image(systemName: "compass.drawing")
-//                Text(vm.monthsSpan?.name ?? "Error")
-//            }
-//            VStack(alignment: .leading) {
-//                Image(systemName: "compass.drawing")
-//                Text(vm.yearsSpan?.name ?? "Error")
-//            }
-//        }
-//    }
-//
-//    private var todayRow: some View {
-//        HStack {
-//            Text("Today: \(vm.todaysMiles.asDistanceWith2Decimals())")
-//            Spacer()
-//            VStack(alignment: .leading) {
-//                Image(systemName: "compass.drawing")
-//                Text(vm.todaysSpan?.name ?? "Error")
-//            }
-//        }
-//    }
-//
-//    private var weekRow: some View {
-//        HStack {
-//            Text("This Week: \(vm.weekMiles.asDistanceWith2Decimals())")
-//            Spacer()
-//            VStack(alignment: .leading) {
-//                Image(systemName: "compass.drawing")
-//                Text(vm.weeksSpan?.name ?? "Error")
-//            }
-//        }
-//
-//    }
-//    private var monthRow: some View {
-//        HStack {
-//            Text("This Month: \(vm.monthMiles.asDistanceWith2Decimals())")
-//            Spacer()
-//            VStack(alignment: .leading) {
-//                Image(systemName: "compass.drawing")
-//                Text(vm.monthsSpan?.name ?? "Error")
-//            }
-//        }
-//    }
-//
-//    private var yearRow: some View {
-//        HStack {
-//            Text("This Year: \(vm.yearMiles.asDistanceWith2Decimals())")
-//            Spacer()
-//            VStack(alignment: .leading) {
-//                Image(systemName: "compass.drawing")
-//                Text(vm.yearsSpan?.name ?? "Error")
-//            }
-//        }
-//    }
-//}

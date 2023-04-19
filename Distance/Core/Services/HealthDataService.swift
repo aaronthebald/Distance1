@@ -14,6 +14,9 @@ class HealthDataService: ObservableObject {
     @Published var monthMiles: Double = 0.rounded(.toNearestOrEven)
     @Published var yearMiles: Double = 0.rounded(.toNearestOrEven)
     @Published var timeFrame: startOptions = .today
+    @Published var weekSF: Bool = false
+    @Published var monthSF: Bool = false
+    @Published var yearSF: Bool = false
     @Published var spans: [SpanModel] = []
     @Published var todaysSpan: SpanModel?
     @Published var weeksSpan: SpanModel?
@@ -36,7 +39,7 @@ class HealthDataService: ObservableObject {
     let healthStore = HKHealthStore()
     
     enum startOptions {
-    case today, thisWeek, thisMonth, thisYear
+    case today, thisWeekSoFar, thisMonthSoFar, thisYearSoFar, past7Days, pastMonth, PastYear
     }
     
     
@@ -45,11 +48,35 @@ class HealthDataService: ObservableObject {
         switch start {
         case .today :
             return Calendar.current.startOfDay(for: Date())
-        case .thisWeek :
-            return Calendar.current.date(byAdding: .day, value:  -6, to: Date())!
-        case .thisMonth :
+        case .thisWeekSoFar :
+            let begOfWeek = Date().startOfWeek(using: Calendar.current)
+            return begOfWeek
+
+        case .thisMonthSoFar :
+            let currentMonth = Calendar.current.component(.month, from: Date())
+            let begOfMonth = Calendar.current.nextDate(
+                after: .now,
+                matching: DateComponents(month: currentMonth, day: 1),
+                matchingPolicy: .nextTime,
+                direction: .backward
+            )
+            return begOfMonth!
+            
+        case .thisYearSoFar :
+            let begOfYear = Calendar.current.nextDate(
+                after: .now,
+                matching: DateComponents(month: 1, day: 1),
+                matchingPolicy: .nextTime,
+                direction: .backward
+            )
+            return begOfYear!
+        case .past7Days :
+            return Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+            
+        case .pastMonth :
             return Calendar.current.date(byAdding: .month, value: -1, to: Date())!
-        case .thisYear :
+
+        case .PastYear :
             return Calendar.current.date(byAdding: .year, value: -1, to: Date())!
         }
     }
@@ -77,6 +104,13 @@ class HealthDataService: ObservableObject {
             fetchYearStats()
     }
     
+    func updateWeek() {
+        DispatchQueue.main.sync {
+            fetchWeekStats()
+            getWeeksSpan()
+        }
+    }
+    
     func fetchTodayStats() {
         let now = Date()
         let startOfDay = setTimeFrame(start: .today)
@@ -96,13 +130,14 @@ class HealthDataService: ObservableObject {
     
     func fetchWeekStats() {
         let now = Date()
-        let startOfDay = setTimeFrame(start: .thisWeek)
+        let startOfDay = setTimeFrame(start: weekSF ? .thisWeekSoFar : .past7Days)
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
         let query = HKStatisticsQuery(quantityType: totalDistance, quantitySamplePredicate: predicate, options: .cumulativeSum) { (query, result, error) in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 if let sum = result?.sumQuantity() {
                     self.weekMiles = sum.doubleValue(for: HKUnit.mile())
                     print("Week Stats ran")
+                    getWeeksSpan()
                 } else {
                     print("Error fetching step count: \(error?.localizedDescription ?? "Unknown error")")
                 }
@@ -113,13 +148,14 @@ class HealthDataService: ObservableObject {
     
     func fetchMonthStats() {
         let now = Date()
-        let startOfDay = setTimeFrame(start: .thisMonth)
+        let startOfDay = setTimeFrame(start: monthSF ? .thisMonthSoFar : .pastMonth)
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
         let query = HKStatisticsQuery(quantityType: totalDistance, quantitySamplePredicate: predicate, options: .cumulativeSum) { (query, result, error) in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 if let sum = result?.sumQuantity() {
                     self.monthMiles = sum.doubleValue(for: HKUnit.mile())
                     print("Month Stats ran")
+                    getMonthsSpan()
                 } else {
                     print("Error fetching step count: \(error?.localizedDescription ?? "Unknown error")")
                 }
@@ -130,13 +166,14 @@ class HealthDataService: ObservableObject {
     
     func fetchYearStats() {
         let now = Date()
-        let startOfDay = setTimeFrame(start: .thisYear)
+        let startOfDay = setTimeFrame(start: yearSF ? .thisYearSoFar : .PastYear)
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
         let query = HKStatisticsQuery(quantityType: totalDistance, quantitySamplePredicate: predicate, options: .cumulativeSum) { (query, result, error) in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 if let sum = result?.sumQuantity() {
                     self.yearMiles = sum.doubleValue(for: HKUnit.mile())
                     print("Year Stats ran")
+                    getYearsSpan()
                 } else {
                     print("Error fetching step count: \(error?.localizedDescription ?? "Unknown error")")
                 }
@@ -194,6 +231,7 @@ class HealthDataService: ObservableObject {
         if let nearestSpan = spans.last(where: {$0.length <= todaysMiles}) {
             print(nearestSpan.name)
             if self.todaysSpan == nearestSpan {
+                print("early exit")
                 return
             } else {
                 self.todaysSpan = nearestSpan
@@ -204,22 +242,31 @@ class HealthDataService: ObservableObject {
         }
     }
     func getWeeksSpan() {
-        if let nearestSpan = spans.last(where: {$0.length <= weekMiles}) {
-            print(nearestSpan.name)
-            if self.weeksSpan == nearestSpan {
-                return
-            } else {
+            if let nearestSpan = spans.last(where: {$0.length <= weekMiles}) {
+                print(nearestSpan.name)
                 self.weeksSpan = nearestSpan
                 NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
             }
-        } else {
-            print("You havent walked enough to get a notification yet...")
-        }
     }
+        
+//        if let nearestSpan = spans.last(where: {$0.length <= weekMiles}) {
+//            print(nearestSpan.name)
+//            if self.weeksSpan == nearestSpan {
+//                print("early exit")
+//                return
+//            } else {
+//                self.weeksSpan = nearestSpan
+//                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
+//            }
+//        } else {
+//            print("You havent walked enough to get a notification yet...")
+//        }
+//    }
     func getMonthsSpan() {
         if let nearestSpan = spans.last(where: {$0.length <= monthMiles}) {
             print(nearestSpan.name)
             if self.monthsSpan == nearestSpan {
+                print("early exit")
                 return
             } else {
                 self.monthsSpan = nearestSpan
@@ -231,15 +278,7 @@ class HealthDataService: ObservableObject {
     }
     func getYearsSpan() {
         if let nearestSpan = spans.last(where: {$0.length <= yearMiles}) {
-            print(nearestSpan.name)
-            if self.yearsSpan == nearestSpan {
-                return
-            } else {
-                self.yearsSpan = nearestSpan
-                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This year")
-            }
-        } else {
-            print("You havent walked enough to get a notification yet...")
+            self.yearsSpan = nearestSpan
         }
     }
 }
