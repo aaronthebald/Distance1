@@ -23,6 +23,7 @@
 /* Begin PBXFileReference section */
 		0240511129EDCA4A00A2B71A /* listRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = listRowView.swift; sourceTree = "<group>"; };
 		0240511329F07F4800A2B71A /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		0240511529F185CE00A2B71A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		025489D429DF626400ECE9D9 /* Distance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Distance.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		025489D729DF626400ECE9D9 /* DistanceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceApp.swift; sourceTree = "<group>"; };
 		025489DB29DF626400ECE9D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -66,6 +67,7 @@
 		025489D629DF626400ECE9D9 /* Distance */ = {
 			isa = PBXGroup;
 			children = (
+				0240511529F185CE00A2B71A /* Info.plist */,
 				025489F029E47EC100ECE9D9 /* Models */,
 				025489ED29E0BE3500ECE9D9 /* Extenstions */,
 				025489D729DF626400ECE9D9 /* DistanceApp.swift */,
@@ -341,6 +343,7 @@
 				DEVELOPMENT_TEAM = MW75NQ7TG5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Distance/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Allow Distance to read your total distance walked. We use this data to help you reach your movement goals  ";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "I want to make a simple app that helps motivate you to walk";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -377,6 +380,7 @@
 				DEVELOPMENT_TEAM = MW75NQ7TG5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Distance/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Allow Distance to read your total distance walked. We use this data to help you reach your movement goals  ";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "I want to make a simple app that helps motivate you to walk";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

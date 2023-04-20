@@ -30,8 +30,6 @@ class HealthDataService: ObservableObject {
         spans.sort(by: { $0.length < $1.length})
         print(spans.description)
         requestAccess()
-        fetchAllStats()
-        backgroundQuery()
         print("Init ran")
     }
     
@@ -96,6 +94,39 @@ class HealthDataService: ObservableObject {
         enableBackgroundDelivery()
     }
     
+    // grants permission to moniter healthStore in the background
+    func enableBackgroundDelivery() {
+        healthStore.enableBackgroundDelivery(for: HKQuantityType(.distanceWalkingRunning), frequency: .immediate) { success, error in
+            if let error = error {
+                print("there was an error \(error)")
+            }
+            if success {
+                print("Permission for background queries granted")
+                self.backgroundQuery()
+            }
+        }
+    }
+    
+    // Moniters healthStore for changes to the HKQuanttyType distanceWalkingRunning
+    func backgroundQuery() {
+        let typeToRead = HKQuantityType(.distanceWalkingRunning)
+        let newPredicate = HKQuery.predicateForObjects(from: .default())
+        let observerQuery = HKObserverQuery(sampleType: typeToRead, predicate: newPredicate) { (query, completionHandler, errorOrNil) in
+            guard errorOrNil == nil else {
+                print("Error: \(errorOrNil!.localizedDescription)")
+                return
+            }
+            // Perform any necessary actions when the observer query detects a change
+            DispatchQueue.main.sync {
+                self.fetchAllStats()
+                self.queriesRan += 1
+                print("Observer query detected a change")
+            }
+            completionHandler()
+        }
+        healthStore.execute(observerQuery)
+    }
+    
     // reads the healthStore and updates published varibles
     func fetchAllStats() {
             fetchTodayStats()
@@ -116,10 +147,13 @@ class HealthDataService: ObservableObject {
         let startOfDay = setTimeFrame(start: .today)
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
         let query = HKStatisticsQuery(quantityType: totalDistance, quantitySamplePredicate: predicate, options: .cumulativeSum) { (query, result, error) in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 if let sum = result?.sumQuantity() {
                     self.todaysMiles = sum.doubleValue(for: HKUnit.mile())
                     print("Today Stats ran")
+                    if self.todaysSpan != spans.last(where: {$0.length <= todaysMiles}) {
+                        getTodaysSpan()
+                    }
                 } else {
                     print("Error fetching step count: \(error?.localizedDescription ?? "Unknown error")")
                 }
@@ -137,7 +171,10 @@ class HealthDataService: ObservableObject {
                 if let sum = result?.sumQuantity() {
                     self.weekMiles = sum.doubleValue(for: HKUnit.mile())
                     print("Week Stats ran")
-                    getWeeksSpan()
+                    if self.weeksSpan != spans.last(where: {$0.length <= weekMiles}) {
+                        getWeeksSpan()
+                    }
+                    
                 } else {
                     print("Error fetching step count: \(error?.localizedDescription ?? "Unknown error")")
                 }
@@ -155,7 +192,9 @@ class HealthDataService: ObservableObject {
                 if let sum = result?.sumQuantity() {
                     self.monthMiles = sum.doubleValue(for: HKUnit.mile())
                     print("Month Stats ran")
-                    getMonthsSpan()
+                    if self.monthsSpan != spans.last(where: {$0.length <= monthMiles}) {
+                        getMonthsSpan()
+                    }
                 } else {
                     print("Error fetching step count: \(error?.localizedDescription ?? "Unknown error")")
                 }
@@ -173,7 +212,9 @@ class HealthDataService: ObservableObject {
                 if let sum = result?.sumQuantity() {
                     self.yearMiles = sum.doubleValue(for: HKUnit.mile())
                     print("Year Stats ran")
-                    getYearsSpan()
+                    if self.yearsSpan != spans.last(where: {$0.length <= yearMiles}) {
+                        getYearsSpan()
+                    }
                 } else {
                     print("Error fetching step count: \(error?.localizedDescription ?? "Unknown error")")
                 }
@@ -181,64 +222,14 @@ class HealthDataService: ObservableObject {
         }
         healthStore.execute(query)
     }
-    
-    // grants permission to moniter healthStore in the background
-    func enableBackgroundDelivery() {
-        healthStore.enableBackgroundDelivery(for: HKQuantityType(.distanceWalkingRunning), frequency: .immediate) { success, error in
-            if let error = error {
-                print("there was an error \(error)")
-            }
-            if success {
-                print("Permission for background queries granted")
-                self.backgroundQuery()
-            }
-        }
-    }
-    
-    // Moniters healthStore for changes to the HKQuanttyType distanceWalkingRunning
-    func backgroundQuery() {
-        let typeToRead = HKQuantityType(.distanceWalkingRunning)
-        let newPredicate = HKQuery.predicateForObjects(from: .default())
-        
 
-        let observerQuery = HKObserverQuery(sampleType: typeToRead, predicate: newPredicate) { (query, completionHandler, errorOrNil) in
-            guard errorOrNil == nil else {
-                print("Error: \(errorOrNil!.localizedDescription)")
-                return
-            }
-            // Perform any necessary actions when the observer query detects a change
-            DispatchQueue.main.sync {
-                self.fetchAllStats()
-                self.queriesRan += 1
-                self.setSpans()
-                print("Observer query detected a change")
-                
-            }
-            completionHandler()
-        }
-        healthStore.execute(observerQuery)
-    }
-    
-    // Itterates over the array of spans to find the closest one to the totalMiles var and schedules notification with that info
-    func setSpans() {
-        getTodaysSpan()
-        getWeeksSpan()
-        getMonthsSpan()
-        getYearsSpan()
-    }
+
     
     func getTodaysSpan() {
         if let nearestSpan = spans.last(where: {$0.length <= todaysMiles}) {
             print(nearestSpan.name)
-            if self.todaysSpan == nearestSpan {
-                print("early exit")
-                return
-            } else {
-                self.todaysSpan = nearestSpan
-                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "Today")
-            }
-        } else {
-            print("You havent walked enough to get a notification yet...")
+            self.todaysSpan = nearestSpan
+            NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "Today")
         }
     }
     func getWeeksSpan() {
@@ -248,37 +239,18 @@ class HealthDataService: ObservableObject {
                 NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
             }
     }
-        
-//        if let nearestSpan = spans.last(where: {$0.length <= weekMiles}) {
-//            print(nearestSpan.name)
-//            if self.weeksSpan == nearestSpan {
-//                print("early exit")
-//                return
-//            } else {
-//                self.weeksSpan = nearestSpan
-//                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
-//            }
-//        } else {
-//            print("You havent walked enough to get a notification yet...")
-//        }
-//    }
     func getMonthsSpan() {
-        if let nearestSpan = spans.last(where: {$0.length <= monthMiles}) {
-            print(nearestSpan.name)
-            if self.monthsSpan == nearestSpan {
-                print("early exit")
-                return
-            } else {
+            if let nearestSpan = spans.last(where: {$0.length <= monthMiles}) {
+                print(nearestSpan.name)
                 self.monthsSpan = nearestSpan
-                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This month")
+                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
             }
-        } else {
-            print("You havent walked enough to get a notification yet...")
-        }
     }
     func getYearsSpan() {
-        if let nearestSpan = spans.last(where: {$0.length <= yearMiles}) {
-            self.yearsSpan = nearestSpan
+            if let nearestSpan = spans.last(where: {$0.length <= yearMiles}) {
+                print(nearestSpan.name)
+                self.yearsSpan = nearestSpan
+                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
         }
     }
 }

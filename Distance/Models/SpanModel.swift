@@ -10,6 +10,7 @@ import Foundation
 struct SpanModel: Hashable {
     let name: String
     let length: Double
+    let url: String
 }
 
 

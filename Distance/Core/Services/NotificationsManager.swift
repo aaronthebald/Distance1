@@ -7,6 +7,7 @@
 
 import Foundation
 import UserNotifications
+import SwiftUI
 
 class NotificationsManager {
     static let instance = NotificationsManager()
@@ -23,6 +24,7 @@ class NotificationsManager {
     }
     
     func distanceNotification(span: SpanModel, timeFrame: String) {
+        
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
         content.title = "Wow you're crushing it!"

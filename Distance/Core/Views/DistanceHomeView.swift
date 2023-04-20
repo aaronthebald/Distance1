@@ -10,8 +10,7 @@ import HealthKit
 
 struct DistanceHomeView: View {
     @StateObject var vm: HealthDataService = HealthDataService()
-    
-
+    let urlPlaceHolder = URL(string: "https://www.google.com/?client=safari")!
     var body: some View {
         NavigationStack {
             List {
@@ -20,10 +19,8 @@ struct DistanceHomeView: View {
                     .listRowBackground(rowBackground)
                 weekRow
                     .onTapGesture {
-                        print("tap regestured")
                         vm.weekSF.toggle()
                         vm.fetchWeekStats()
-                        
                     }
                     .listRowSeparator(.hidden)
                     .listRowBackground(rowBackground)
@@ -76,6 +73,7 @@ extension DistanceHomeView {
                     .font(.title2)
                 Spacer()
             }
+            
             .foregroundColor(.green)
             Spacer()
             HStack(alignment:.bottom) {
@@ -85,7 +83,11 @@ extension DistanceHomeView {
                     .font(.footnote)
                 Spacer()
                 Text(vm.todaysSpan?.name ?? "")
-                    .font(.subheadline)
+                    
+                
+                
+//                Text(vm.todaysSpan?.name ?? "")
+//                    .font(.subheadline)
             }
             
         }
@@ -104,6 +106,7 @@ extension DistanceHomeView {
                 Text(vm.weekSF ? "This Week So Far:" : "The Past Week:")
                     .font(.title2)
                 Spacer()
+                
             }
             .foregroundColor(.green)
             Spacer()
@@ -114,7 +117,7 @@ extension DistanceHomeView {
                     .font(.footnote)
                 Spacer()
                 Text(vm.weeksSpan?.name ?? "")
-                    .font(.subheadline)
+                    
             }
             
         }
@@ -142,7 +145,6 @@ extension DistanceHomeView {
                     .font(.footnote)
                 Spacer()
                 Text(vm.monthsSpan?.name ?? "")
-                    .font(.subheadline)
             }
         }
         .cornerRadius(10)
@@ -169,7 +171,6 @@ extension DistanceHomeView {
                     .font(.footnote)
                 Spacer()
                 Text(vm.yearsSpan?.name ?? "")
-                    .font(.subheadline)
             }
         }
         .cornerRadius(10)
@@ -183,6 +184,30 @@ extension DistanceHomeView {
             .frame(height: 70)
             .frame(maxWidth: .infinity)
     }
-    
+
+    private func fetchTodayURL() -> URL? {
+        guard let urlString = vm.todaysSpan?.url else { return nil}
+        guard let url = URL(string: urlString) else {return nil}
+        return url
     }
+    
+    private func fetchWeekURL() -> URL? {
+        guard let urlString = vm.weeksSpan?.url else { return nil}
+        guard let url = URL(string: urlString) else {return nil}
+        return url
+        }
+    
+    private func fetchMonthURL() -> URL? {
+        guard let urlString = vm.monthsSpan?.url else { return nil}
+        guard let url = URL(string: urlString) else {return nil}
+        return url
+    }
+
+    private func fetchYearURL() -> URL? {
+        guard let urlString = vm.yearsSpan?.url else { return nil}
+        guard let url = URL(string: urlString) else {return nil}
+        return url
+    }
+    
+}
 
