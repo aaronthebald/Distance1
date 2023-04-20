@@ -226,31 +226,63 @@ class HealthDataService: ObservableObject {
 
     
     func getTodaysSpan() {
-        if let nearestSpan = spans.last(where: {$0.length <= todaysMiles}) {
-            print(nearestSpan.name)
-            self.todaysSpan = nearestSpan
-            NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "Today")
+        if todaysSpan == nil {
+            if let nearestSpan = spans.last(where: {$0.length <= todaysMiles}) {
+                print(nearestSpan.name)
+                self.todaysSpan = nearestSpan
+            } else {
+                if let nearestSpan = spans.last(where: {$0.length <= todaysMiles}) {
+                    print(nearestSpan.name)
+                    self.todaysSpan = nearestSpan
+                    NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "Today")
+                }
+            }
         }
     }
+    
     func getWeeksSpan() {
+        if weeksSpan == nil {
             if let nearestSpan = spans.last(where: {$0.length <= weekMiles}) {
                 print(nearestSpan.name)
                 self.weeksSpan = nearestSpan
-                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
+            } else {
+                if let nearestSpan = spans.last(where: {$0.length <= weekMiles}) {
+                    print(nearestSpan.name)
+                    self.weeksSpan = nearestSpan
+                    NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
+                }
             }
+        }
     }
+    
     func getMonthsSpan() {
+        if monthsSpan == nil {
+            if let nearestSpan = spans.last(where: {$0.length <= monthMiles}) {
+                print(nearestSpan.name)
+                self.monthsSpan = nearestSpan
+            }
+        } else {
             if let nearestSpan = spans.last(where: {$0.length <= monthMiles}) {
                 print(nearestSpan.name)
                 self.monthsSpan = nearestSpan
                 NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
             }
+        }
+            
     }
+    
     func getYearsSpan() {
+        if yearsSpan == nil {
+            if let nearestSpan = spans.last(where: {$0.length <= yearMiles}) {
+                print(nearestSpan.name)
+                self.yearsSpan = nearestSpan
+            }
+        } else {
             if let nearestSpan = spans.last(where: {$0.length <= yearMiles}) {
                 print(nearestSpan.name)
                 self.yearsSpan = nearestSpan
                 NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
+            }
         }
     }
 }

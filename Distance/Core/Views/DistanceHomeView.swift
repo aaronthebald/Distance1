@@ -46,8 +46,15 @@ struct DistanceHomeView: View {
             .refreshable {
                 vm.fetchAllStats()
             }
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Text("\(vm.queriesRan)")
+                        .font(.headline)
+                }
+            })
             .navigationTitle("Distance")
             }
+        
         .onAppear {
             NotificationsManager.instance.requestAuthorization()
         }
