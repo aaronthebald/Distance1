@@ -187,7 +187,7 @@ extension DistanceHomeView {
     
     private var rowBackground: some View {
         RoundedRectangle(cornerRadius: 10)
-            .foregroundColor(.white)
+            .foregroundColor(.accentColor)
             .frame(height: 70)
             .frame(maxWidth: .infinity)
     }
