@@ -5,8 +5,11 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>App downloads content from the network this is a test to try to get notifications in the background</string>
-		<string>App processes data in the background This is also a test test test</string>
 		<string>App downloads content in response to push notifications I can write something in here to help with my app</string>
+		<string>App processes data in the background This is also a test test test</string>
+		<string>fetch</string>
+		<string>processing</string>
+		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>

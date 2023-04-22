@@ -152,6 +152,7 @@ class HealthDataService: ObservableObject {
                     self.todaysMiles = sum.doubleValue(for: HKUnit.mile())
                     print("Today Stats ran")
                     if self.todaysSpan != spans.last(where: {$0.length <= todaysMiles}) {
+                        print("spans were not equal")
                         getTodaysSpan()
                     }
                 } else {
@@ -225,17 +226,18 @@ class HealthDataService: ObservableObject {
 
 
     
-    func getTodaysSpan() {
+    func getTodaysSpan() { 
         if todaysSpan == nil {
             if let nearestSpan = spans.last(where: {$0.length <= todaysMiles}) {
                 print(nearestSpan.name)
                 self.todaysSpan = nearestSpan
-            } else {
+            }
+            
+        } else {
                 if let nearestSpan = spans.last(where: {$0.length <= todaysMiles}) {
                     print(nearestSpan.name)
                     self.todaysSpan = nearestSpan
                     NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "Today")
-                }
             }
         }
     }
@@ -245,7 +247,8 @@ class HealthDataService: ObservableObject {
             if let nearestSpan = spans.last(where: {$0.length <= weekMiles}) {
                 print(nearestSpan.name)
                 self.weeksSpan = nearestSpan
-            } else {
+            }
+        } else {
                 if let nearestSpan = spans.last(where: {$0.length <= weekMiles}) {
                     print(nearestSpan.name)
                     self.weeksSpan = nearestSpan
@@ -253,7 +256,7 @@ class HealthDataService: ObservableObject {
                 }
             }
         }
-    }
+    
     
     func getMonthsSpan() {
         if monthsSpan == nil {
