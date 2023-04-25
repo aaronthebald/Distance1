@@ -10,7 +10,7 @@ import HealthKit
 
 struct DistanceHomeView: View {
     @StateObject var vm: HealthDataService = HealthDataService()
-    let urlPlaceHolder = URL(string: "https://www.google.com/?client=safari")!
+    @State var showAddSheet: Bool = false
     var body: some View {
         NavigationStack {
             List {
@@ -41,8 +41,14 @@ struct DistanceHomeView: View {
                     .listRowSeparator(.hidden)
                     .listRowBackground(rowBackground)
                 
+                goalRow
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(rowBackground)
                                     
             }
+            .sheet(isPresented: $showAddSheet, content: {
+                AddGoalSpan(vm: vm)
+            })
             .refreshable {
                 vm.fetchAllStats()
             }
@@ -51,6 +57,15 @@ struct DistanceHomeView: View {
                     Text("\(vm.queriesRan)")
                         .font(.headline)
                 }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showAddSheet.toggle()
+                    } label: {
+                        Text("Show add sheet")
+                            .foregroundColor(.blue)
+                    }
+
+                }
             })
             .navigationTitle("Distance")
             }
@@ -58,7 +73,6 @@ struct DistanceHomeView: View {
         .onAppear {
             NotificationsManager.instance.requestAuthorization()
         }
-        
     }
 }
 
@@ -90,11 +104,6 @@ extension DistanceHomeView {
                     .font(.footnote)
                 Spacer()
                 Text(vm.todaysSpan?.name ?? "")
-                    
-                
-                
-//                Text(vm.todaysSpan?.name ?? "")
-//                    .font(.subheadline)
             }
             
         }
@@ -126,7 +135,6 @@ extension DistanceHomeView {
                 Text(vm.weeksSpan?.name ?? "")
                     
             }
-            
         }
         .cornerRadius(10)
         .frame(maxWidth: .infinity)
@@ -185,36 +193,37 @@ extension DistanceHomeView {
         .frame(height: 60)
     }
     
+    private var goalRow: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Image(systemName: "figure.walk.circle")
+                    .resizable()
+                    .frame(width: 25)
+                Text("Selected Goal")
+                    .font(.title2)
+                Spacer()
+            }
+            .foregroundColor(.green)
+            Spacer()
+            HStack(alignment:.bottom) {
+                Text("\(vm.goalSpan?.length.asDistanceWith2Decimals() ?? "0" )")
+                    .font(.title2)
+                Text("Miles")
+                    .font(.footnote)
+                Spacer()
+                Text(vm.goalSpan?.name ?? "")
+            }
+        }
+        .cornerRadius(10)
+        .frame(maxWidth: .infinity)
+        .frame(height: 60)
+    }
+    
     private var rowBackground: some View {
         RoundedRectangle(cornerRadius: 10)
             .foregroundColor(.accentColor)
             .frame(height: 70)
             .frame(maxWidth: .infinity)
     }
-
-    private func fetchTodayURL() -> URL? {
-        guard let urlString = vm.todaysSpan?.url else { return nil}
-        guard let url = URL(string: urlString) else {return nil}
-        return url
-    }
-    
-    private func fetchWeekURL() -> URL? {
-        guard let urlString = vm.weeksSpan?.url else { return nil}
-        guard let url = URL(string: urlString) else {return nil}
-        return url
-        }
-    
-    private func fetchMonthURL() -> URL? {
-        guard let urlString = vm.monthsSpan?.url else { return nil}
-        guard let url = URL(string: urlString) else {return nil}
-        return url
-    }
-
-    private func fetchYearURL() -> URL? {
-        guard let urlString = vm.yearsSpan?.url else { return nil}
-        guard let url = URL(string: urlString) else {return nil}
-        return url
-    }
-    
 }
 

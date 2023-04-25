@@ -13,6 +13,7 @@ class HealthDataService: ObservableObject {
     @Published var weekMiles: Double = 0.rounded(.toNearestOrEven)
     @Published var monthMiles: Double = 0.rounded(.toNearestOrEven)
     @Published var yearMiles: Double = 0.rounded(.toNearestOrEven)
+    @Published var goalSpan: SpanModel?
     @Published var timeFrame: startOptions = .today
     @Published var weekSF: Bool = false
     @Published var monthSF: Bool = false
@@ -288,4 +289,9 @@ class HealthDataService: ObservableObject {
             }
         }
     }
+    
+    func addSpan(span: SpanModel) {
+        spans.append(span)
+    }
+    
 }

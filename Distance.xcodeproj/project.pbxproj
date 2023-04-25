@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0240511229EDCA4A00A2B71A /* listRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240511129EDCA4A00A2B71A /* listRowView.swift */; };
 		0240511429F07F4800A2B71A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240511329F07F4800A2B71A /* Date.swift */; };
+		0240511A29F7096B00A2B71A /* GoalSpanModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0240511829F7096B00A2B71A /* GoalSpanModel.xcdatamodeld */; };
+		0240511E29F7178800A2B71A /* AddGoalSpan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240511D29F7178800A2B71A /* AddGoalSpan.swift */; };
 		025489D829DF626400ECE9D9 /* DistanceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025489D729DF626400ECE9D9 /* DistanceApp.swift */; };
 		025489DC29DF626400ECE9D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 025489DB29DF626400ECE9D9 /* Assets.xcassets */; };
 		025489DF29DF626400ECE9D9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 025489DE29DF626400ECE9D9 /* Preview Assets.xcassets */; };
@@ -24,6 +26,8 @@
 		0240511129EDCA4A00A2B71A /* listRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = listRowView.swift; sourceTree = "<group>"; };
 		0240511329F07F4800A2B71A /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		0240511529F185CE00A2B71A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		0240511929F7096B00A2B71A /* GoalSpanModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GoalSpanModel.xcdatamodel; sourceTree = "<group>"; };
+		0240511D29F7178800A2B71A /* AddGoalSpan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGoalSpan.swift; sourceTree = "<group>"; };
 		025489D429DF626400ECE9D9 /* Distance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Distance.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		025489D729DF626400ECE9D9 /* DistanceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceApp.swift; sourceTree = "<group>"; };
 		025489DB29DF626400ECE9D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -111,6 +115,7 @@
 			children = (
 				025489E929DF638100ECE9D9 /* DistanceHomeView.swift */,
 				0240511129EDCA4A00A2B71A /* listRowView.swift */,
+				0240511D29F7178800A2B71A /* AddGoalSpan.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -128,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				025489F129E47F0500ECE9D9 /* SpanModel.swift */,
+				0240511829F7096B00A2B71A /* GoalSpanModel.xcdatamodeld */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -210,6 +216,8 @@
 				025489EF29E0BE4A00ECE9D9 /* Double.swift in Sources */,
 				025489D829DF626400ECE9D9 /* DistanceApp.swift in Sources */,
 				0240511429F07F4800A2B71A /* Date.swift in Sources */,
+				0240511E29F7178800A2B71A /* AddGoalSpan.swift in Sources */,
+				0240511A29F7096B00A2B71A /* GoalSpanModel.xcdatamodeld in Sources */,
 				025489F229E47F0500ECE9D9 /* SpanModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -427,6 +435,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		0240511829F7096B00A2B71A /* GoalSpanModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				0240511929F7096B00A2B71A /* GoalSpanModel.xcdatamodel */,
+			);
+			currentVersion = 0240511929F7096B00A2B71A /* GoalSpanModel.xcdatamodel */;
+			path = GoalSpanModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 025489CC29DF626400ECE9D9 /* Project object */;
 }

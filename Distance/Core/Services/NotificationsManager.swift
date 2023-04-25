@@ -32,7 +32,7 @@ class NotificationsManager {
         content.sound = UNNotificationSound.default
         content.badge = 1
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: true)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 60.0, repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         
         center.add(request) { error in
