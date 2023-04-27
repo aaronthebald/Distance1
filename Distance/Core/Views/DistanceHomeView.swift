@@ -11,63 +11,85 @@ import HealthKit
 struct DistanceHomeView: View {
     @StateObject var vm: HealthDataService = HealthDataService()
     @State var showAddSheet: Bool = false
+    @State var showChooseSheet: Bool = false
+    @State var selectedSpan: SpanModel = SpanModel(name: "5 Miles", length: 5.0)
+    
     var body: some View {
         NavigationStack {
-            List {
-               todayRow
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(rowBackground)
-                weekRow
-                    .onTapGesture {
-                        vm.weekSF.toggle()
-                        vm.fetchWeekStats()
+            ZStack {
+                List {
+                   todayRow
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(rowBackground)
+                    weekRow
+                        .onTapGesture {
+                            vm.weekSF.toggle()
+                            vm.fetchWeekStats()
+                        }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(rowBackground)
+                    monthRow
+                        .onTapGesture {
+                            vm.monthSF.toggle()
+                            vm.fetchMonthStats()
+                        }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(rowBackground)
+                    yearRow
+                        .onTapGesture {
+                            print("tapped")
+                            vm.yearSF.toggle()
+                            vm.fetchYearStats()
+                            print(vm.yearMiles)
+                        }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(rowBackground)
+                    
+                    if vm.goalSpan != nil {
+                        goalRow
+                            .onLongPressGesture(perform: {
+                                showChooseSheet = true
+                            })
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(rowBackground)
                     }
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(rowBackground)
-                monthRow
-                    .onTapGesture {
-                        vm.monthSF.toggle()
-                        vm.fetchMonthStats()
-                    }
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(rowBackground)
-                yearRow
-                    .onTapGesture {
-                        print("tapped")
-                        vm.yearSF.toggle()
-                        vm.fetchYearStats()
-                        print(vm.yearMiles)
-                    }
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(rowBackground)
+                }
+                .sheet(isPresented: $showAddSheet, content: {
+                    NewGoalSpanView(vm: vm, showAddSheet: $showAddSheet, selectedSpan: $selectedSpan).presentationDetents([.height(300)])
+                        .presentationDragIndicator(.visible)
+                })
                 
-                goalRow
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(rowBackground)
-                                    
-            }
-            .sheet(isPresented: $showAddSheet, content: {
-                AddGoalSpan(vm: vm)
-            })
-            .refreshable {
-                vm.fetchAllStats()
-            }
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Text("\(vm.queriesRan)")
-                        .font(.headline)
+                
+                .refreshable {
+                    vm.fetchAllStats()
                 }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        showAddSheet.toggle()
-                    } label: {
-                        Text("Show add sheet")
-                            .foregroundColor(.blue)
-                    }
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        
+                        Menu("Add Goal") {
+                            Button {
+                                showAddSheet.toggle()
+                            } label: {
+                                Text("Custom Goal")
+                            }
+                            
+                            Button {
+                                showChooseSheet.toggle()
+                            } label: {
+                                Text("Select a preset goal")
+                            }
 
-                }
-            })
+
+                        }
+                        .tint(.blue)
+                    }
+                })
             .navigationTitle("Distance")
+            }
+            .sheet(isPresented: $showChooseSheet) {
+                ChooseGoalView(vm: vm, showChooseSheet: $showChooseSheet, selectedSpan: $selectedSpan).presentationDetents([.height(250)])
+                    .presentationDragIndicator(.visible)
+            }
             }
         
         .onAppear {

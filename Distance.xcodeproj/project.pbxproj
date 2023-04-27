@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0212755529F9955F0021A242 /* NewGoalSpanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212755429F9955F0021A242 /* NewGoalSpanView.swift */; };
+		0212755729F9C7940021A242 /* ChooseGoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212755629F9C7940021A242 /* ChooseGoalView.swift */; };
 		0240511229EDCA4A00A2B71A /* listRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240511129EDCA4A00A2B71A /* listRowView.swift */; };
 		0240511429F07F4800A2B71A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240511329F07F4800A2B71A /* Date.swift */; };
 		0240511A29F7096B00A2B71A /* GoalSpanModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0240511829F7096B00A2B71A /* GoalSpanModel.xcdatamodeld */; };
@@ -23,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0212755429F9955F0021A242 /* NewGoalSpanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGoalSpanView.swift; sourceTree = "<group>"; };
+		0212755629F9C7940021A242 /* ChooseGoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseGoalView.swift; sourceTree = "<group>"; };
 		0240511129EDCA4A00A2B71A /* listRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = listRowView.swift; sourceTree = "<group>"; };
 		0240511329F07F4800A2B71A /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		0240511529F185CE00A2B71A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -116,6 +120,8 @@
 				025489E929DF638100ECE9D9 /* DistanceHomeView.swift */,
 				0240511129EDCA4A00A2B71A /* listRowView.swift */,
 				0240511D29F7178800A2B71A /* AddGoalSpan.swift */,
+				0212755429F9955F0021A242 /* NewGoalSpanView.swift */,
+				0212755629F9C7940021A242 /* ChooseGoalView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -214,8 +220,10 @@
 				0240511229EDCA4A00A2B71A /* listRowView.swift in Sources */,
 				025489EC29DF63AA00ECE9D9 /* HealthDataService.swift in Sources */,
 				025489EF29E0BE4A00ECE9D9 /* Double.swift in Sources */,
+				0212755529F9955F0021A242 /* NewGoalSpanView.swift in Sources */,
 				025489D829DF626400ECE9D9 /* DistanceApp.swift in Sources */,
 				0240511429F07F4800A2B71A /* Date.swift in Sources */,
+				0212755729F9C7940021A242 /* ChooseGoalView.swift in Sources */,
 				0240511E29F7178800A2B71A /* AddGoalSpan.swift in Sources */,
 				0240511A29F7096B00A2B71A /* GoalSpanModel.xcdatamodeld in Sources */,
 				025489F229E47F0500ECE9D9 /* SpanModel.swift in Sources */,

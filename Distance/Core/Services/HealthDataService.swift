@@ -7,6 +7,8 @@
 
 import Foundation
 import HealthKit
+import Combine
+import SwiftUI
 
 class HealthDataService: ObservableObject {
     @Published var todaysMiles: Double = 0.rounded(.toNearestOrEven)
@@ -26,12 +28,21 @@ class HealthDataService: ObservableObject {
     @Published var completedSpans: [SpanModel] = []
     @Published var queriesRan: Int = 0
     
+    var cancelables = Set<AnyCancellable>()
+    @AppStorage("goalName") var goalName: String = ""
+    @AppStorage("goalDistance") var goalDistance: String = ""
+
+    
+    
     init() {
         spans = SpansServices().getSpans()
         spans.sort(by: { $0.length < $1.length})
         print(spans.description)
         requestAccess()
         print("Init ran")
+        fetchGoalSpan()
+        observeTodaysMiles()
+        print(goalSpan)
     }
     
     var totalDistance = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
@@ -41,6 +52,28 @@ class HealthDataService: ObservableObject {
     case today, thisWeekSoFar, thisMonthSoFar, thisYearSoFar, past7Days, pastMonth, PastYear
     }
     
+     func fetchGoalSpan() {
+        guard let distance = Double(goalDistance)
+        else {
+            print("Faild to assign double to goal span")
+            return
+        }
+        goalSpan = SpanModel(name: goalName, length: distance)
+    }
+    
+    private func observeTodaysMiles() {
+        $todaysMiles
+            .sink { [weak self] miles in
+                guard let span = self?.goalSpan else {return}
+                if miles >= span.length {
+                    NotificationsManager.instance.distanceNotification(span: span, timeFrame: "Today")
+                    self?.goalSpan = nil
+                    self?.goalName = ""
+                    self?.goalDistance = ""
+                }
+            }
+            .store(in: &cancelables)
+    }
     
     // Function to change start paramiter
     private func setTimeFrame(start: startOptions) -> Date {
@@ -238,7 +271,6 @@ class HealthDataService: ObservableObject {
                 if let nearestSpan = spans.last(where: {$0.length <= todaysMiles}) {
                     print(nearestSpan.name)
                     self.todaysSpan = nearestSpan
-                    NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "Today")
             }
         }
     }
@@ -253,7 +285,6 @@ class HealthDataService: ObservableObject {
                 if let nearestSpan = spans.last(where: {$0.length <= weekMiles}) {
                     print(nearestSpan.name)
                     self.weeksSpan = nearestSpan
-                    NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
                 }
             }
         }
@@ -269,7 +300,6 @@ class HealthDataService: ObservableObject {
             if let nearestSpan = spans.last(where: {$0.length <= monthMiles}) {
                 print(nearestSpan.name)
                 self.monthsSpan = nearestSpan
-                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
             }
         }
             
@@ -285,13 +315,7 @@ class HealthDataService: ObservableObject {
             if let nearestSpan = spans.last(where: {$0.length <= yearMiles}) {
                 print(nearestSpan.name)
                 self.yearsSpan = nearestSpan
-                NotificationsManager.instance.distanceNotification(span: nearestSpan, timeFrame: "This week")
             }
         }
     }
-    
-    func addSpan(span: SpanModel) {
-        spans.append(span)
-    }
-    
 }
