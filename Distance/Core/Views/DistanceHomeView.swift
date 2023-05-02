@@ -18,6 +18,15 @@ struct DistanceHomeView: View {
         NavigationStack {
             ZStack {
                 List {
+                    if vm.goalSpan != nil {
+                        goalRow
+                            .onLongPressGesture(perform: {
+                                showChooseSheet = true
+                            })
+                            .listRowSeparator(.hidden)
+                        
+                    }
+                    
                    todayRow
                         .listRowSeparator(.hidden)
                         .listRowBackground(rowBackground)
@@ -45,14 +54,7 @@ struct DistanceHomeView: View {
                         .listRowSeparator(.hidden)
                         .listRowBackground(rowBackground)
                     
-                    if vm.goalSpan != nil {
-                        goalRow
-                            .onLongPressGesture(perform: {
-                                showChooseSheet = true
-                            })
-                            .listRowSeparator(.hidden)
-                        
-                    }
+                   
                     
                 }
                 .sheet(isPresented: $showAddSheet, content: {
