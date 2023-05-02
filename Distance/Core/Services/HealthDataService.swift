@@ -11,10 +11,10 @@ import Combine
 import SwiftUI
 
 class HealthDataService: ObservableObject {
-    @Published var todaysMiles: Double = 0.rounded(.toNearestOrEven)
-    @Published var weekMiles: Double = 0.rounded(.toNearestOrEven)
-    @Published var monthMiles: Double = 0.rounded(.toNearestOrEven)
-    @Published var yearMiles: Double = 0.rounded(.toNearestOrEven)
+    @Published var todaysMiles: Double = 0
+    @Published var weekMiles: Double = 0
+    @Published var monthMiles: Double = 0
+    @Published var yearMiles: Double = 0
     @Published var goalSpan: SpanModel?
     @Published var timeFrame: startOptions = .today
     @Published var weekSF: Bool = false
@@ -37,12 +37,11 @@ class HealthDataService: ObservableObject {
     init() {
         spans = SpansServices().getSpans()
         spans.sort(by: { $0.length < $1.length})
-        print(spans.description)
         requestAccess()
         print("Init ran")
         fetchGoalSpan()
         observeTodaysMiles()
-        print(goalSpan)
+        print(goalSpan as Any)
     }
     
     var totalDistance = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
@@ -122,7 +121,7 @@ class HealthDataService: ObservableObject {
             if let error = error {
                 print("There was an error \(error)")
             } else {
-                print("Access to healthStore granted")
+                
             }
         }
         enableBackgroundDelivery()
@@ -135,7 +134,6 @@ class HealthDataService: ObservableObject {
                 print("there was an error \(error)")
             }
             if success {
-                print("Permission for background queries granted")
                 self.backgroundQuery()
             }
         }
@@ -169,13 +167,6 @@ class HealthDataService: ObservableObject {
             fetchYearStats()
     }
     
-    func updateWeek() {
-        DispatchQueue.main.sync {
-            fetchWeekStats()
-            getWeeksSpan()
-        }
-    }
-    
     func fetchTodayStats() {
         let now = Date()
         let startOfDay = setTimeFrame(start: .today)
@@ -186,7 +177,6 @@ class HealthDataService: ObservableObject {
                     self.todaysMiles = sum.doubleValue(for: HKUnit.mile())
                     print("Today Stats ran")
                     if self.todaysSpan != spans.last(where: {$0.length <= todaysMiles}) {
-                        print("spans were not equal")
                         getTodaysSpan()
                     }
                 } else {

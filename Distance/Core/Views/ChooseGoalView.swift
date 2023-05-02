@@ -15,22 +15,26 @@ struct ChooseGoalView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                HStack {
-                    Text("Select a Goal:")
-                    Spacer()
-                    Picker("", selection: $selectedSpan) {
-                        ForEach(vm.spans, id: \.self) { span in
-                            HStack {
-                                Text(span.name)
-                                Text("\(span.length)")
+            ZStack {
+                List {
+                    HStack {
+                        Text("Select a Goal:")
+                        Spacer()
+                        Picker("", selection: $selectedSpan) {
+                            ForEach(vm.spans, id: \.self) { span in
+                                HStack {
+                                    Text(span.name)
+                                    Text("\(span.length)")
+                                }
+                                    .tag(span)
                             }
-                                .tag(span)
                         }
+                        .tint(.blue)
                     }
-                    .tint(.blue)
-                }
 
+                    
+                }
+                .navigationTitle("Choose Goal:")
                 HStack {
                     Spacer()
                     Button {
@@ -40,13 +44,17 @@ struct ChooseGoalView: View {
                         showChooseSheet = false
                     } label: {
                         Text("Save")
+                            .font(.title3)
+                            .frame(width: 200)
                     }
                     .tint(.blue)
                     .buttonStyle(BorderedProminentButtonStyle())
+                   Spacer()
 
                 }
+                Spacer()
             }
-            .navigationTitle("Choose Goal:")
+            .background(.ultraThickMaterial)
         }
     }
 }

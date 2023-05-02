@@ -51,11 +51,12 @@ struct DistanceHomeView: View {
                                 showChooseSheet = true
                             })
                             .listRowSeparator(.hidden)
-                            .listRowBackground(rowBackground)
+                        
                     }
+                    
                 }
                 .sheet(isPresented: $showAddSheet, content: {
-                    NewGoalSpanView(vm: vm, showAddSheet: $showAddSheet, selectedSpan: $selectedSpan).presentationDetents([.height(300)])
+                    NewGoalSpanView(vm: vm, showAddSheet: $showAddSheet, selectedSpan: $selectedSpan).presentationDetents([.height(350)])
                         .presentationDragIndicator(.visible)
                 })
                 
@@ -220,7 +221,7 @@ extension DistanceHomeView {
             HStack {
                 Image(systemName: "figure.walk.circle")
                     .resizable()
-                    .frame(width: 25)
+                    .frame(width: 25, height: 25)
                 Text("Selected Goal")
                     .font(.title2)
                 Spacer()
@@ -235,10 +236,22 @@ extension DistanceHomeView {
                 Spacer()
                 Text(vm.goalSpan?.name ?? "")
             }
+            Spacer()
+            ProgressView(value: .some(vm.todaysMiles), total: vm.goalSpan!.length) {
+                HStack {
+                    Text("\(vm.todaysMiles.asDistanceWith2Decimals()) Miles")
+                    Spacer()
+                    Text("\(vm.goalSpan!.length.asDistanceWith2Decimals())")
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 60)
+            .tint(.green)
         }
         .cornerRadius(10)
         .frame(maxWidth: .infinity)
-        .frame(height: 60)
+        .frame(height: 125)
+        .padding(4)
     }
     
     private var rowBackground: some View {

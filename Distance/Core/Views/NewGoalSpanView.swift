@@ -16,13 +16,16 @@ struct NewGoalSpanView: View {
     var body: some View {
         NavigationStack {
             
-            List {
-                TextField("Name...", text: $vm.goalName)
-                TextField("Mileage...", text: $vm.goalDistance)
-                    .keyboardType(.decimalPad)
+            ZStack {
+                List {
+                    TextField("Name...", text: $vm.goalName)
+                    TextField("Mileage...", text: $vm.goalDistance)
+                        .keyboardType(.decimalPad)
+                }
+                .navigationTitle("Create Goal")
                 saveButton
             }
-            .navigationTitle("Create Goal")
+            .background(.ultraThickMaterial)
         }
     }
 }
@@ -46,10 +49,12 @@ extension NewGoalSpanView {
                 showAddSheet = false
             } label: {
                 Text("Save")
+                    .font(.title3)
+                    .frame(width: 200)
             }
             .tint(.blue)
-            .buttonStyle(BorderedProminentButtonStyle())
-
+            .buttonStyle(.borderedProminent)
+            Spacer()
         }
     }
 }
