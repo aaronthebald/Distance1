@@ -18,7 +18,7 @@ struct DistanceHomeView: View {
         NavigationStack {
             ZStack {
                 List {
-                    if vm.goalSpan != nil {
+                    if vm.goalSpan?.name != "" {
                         goalRow
                             .onLongPressGesture(perform: {
                                 showChooseSheet = true
@@ -101,6 +101,7 @@ struct DistanceHomeView: View {
         
         .onAppear {
             NotificationsManager.instance.requestAuthorization()
+            UNUserNotificationCenter.current().setBadgeCount(0)
         }
     }
 }

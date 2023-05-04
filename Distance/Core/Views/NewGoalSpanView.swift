@@ -19,7 +19,9 @@ struct NewGoalSpanView: View {
             ZStack {
                 List {
                     TextField("Name...", text: $vm.goalName)
+                        .tint(Color("TextColor"))
                     TextField("Mileage...", text: $vm.goalDistance)
+                        .tint(Color("TextColor"))
                         .keyboardType(.decimalPad)
                 }
                 .navigationTitle("Create Goal")

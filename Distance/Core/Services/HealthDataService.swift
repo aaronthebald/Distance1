@@ -125,13 +125,6 @@ class HealthDataService: ObservableObject {
                 }
             }
         }
-//            if let error = error {
-//                print("There was an error \(error)")
-//            } else {
-//                // should this be a switch statement? on .error and .success?
-//            }
-//        }
-//        enableBackgroundDelivery()
     }
     
     // grants permission to moniter healthStore in the background
