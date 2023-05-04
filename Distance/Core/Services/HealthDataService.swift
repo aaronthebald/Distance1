@@ -38,10 +38,11 @@ class HealthDataService: ObservableObject {
         spans = SpansServices().getSpans()
         spans.sort(by: { $0.length < $1.length})
         requestAccess()
-        print("Init ran")
+        fetchAllStats()
         fetchGoalSpan()
         observeTodaysMiles()
         print(goalSpan as Any)
+        print("Init ran")
     }
     
     var totalDistance = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
@@ -66,9 +67,6 @@ class HealthDataService: ObservableObject {
                 guard let span = self?.goalSpan else {return}
                 if miles >= span.length {
                     NotificationsManager.instance.distanceNotification(span: span, timeFrame: "Today")
-                    self?.goalSpan = nil
-                    self?.goalName = ""
-                    self?.goalDistance = ""
                 }
             }
             .store(in: &cancelables)
@@ -118,13 +116,22 @@ class HealthDataService: ObservableObject {
             HKQuantityType(.distanceWalkingRunning)
         ]
         healthStore.requestAuthorization(toShare: .none, read: read) { success, error in
-            if let error = error {
-                print("There was an error \(error)")
+            if success {
+                print("Access to healthstore granted")
+                self.enableBackgroundDelivery()
             } else {
-                
+                if let error = error {
+                    print("error requesting access\(error)")
+                }
             }
         }
-        enableBackgroundDelivery()
+//            if let error = error {
+//                print("There was an error \(error)")
+//            } else {
+//                // should this be a switch statement? on .error and .success?
+//            }
+//        }
+//        enableBackgroundDelivery()
     }
     
     // grants permission to moniter healthStore in the background
@@ -134,6 +141,7 @@ class HealthDataService: ObservableObject {
                 print("there was an error \(error)")
             }
             if success {
+                print("Background access granted")
                 self.backgroundQuery()
             }
         }
@@ -142,22 +150,30 @@ class HealthDataService: ObservableObject {
     // Moniters healthStore for changes to the HKQuanttyType distanceWalkingRunning
     func backgroundQuery() {
         let typeToRead = HKQuantityType(.distanceWalkingRunning)
-        let newPredicate = HKQuery.predicateForObjects(from: .default())
-        let observerQuery = HKObserverQuery(sampleType: typeToRead, predicate: newPredicate) { (query, completionHandler, errorOrNil) in
-            guard errorOrNil == nil else {
-                print("Error: \(errorOrNil!.localizedDescription)")
+//        let newPredicate = HKQuery.predicateForObjects(from: .default())
+        /*
+         changed the predicate to nil. "A predicate that limits the samples matched by the query. Pass nil if you want to receive updates for every new sample of the specified type."
+         It's posible that using the "Default for object: .default" was limiting the query in some way
+         */
+        let observerQuery = HKObserverQuery(sampleType: typeToRead, predicate: nil) { (query, completionHandler, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
                 return
             }
             // Perform any necessary actions when the observer query detects a change
-            DispatchQueue.main.sync {
-                self.fetchAllStats()
-                self.queriesRan += 1
-                print("Observer query detected a change")
-            }
+            self.fetchAllStats()
+            
+            print("Observer query detected a change")
             completionHandler()
-        }
+            }
         healthStore.execute(observerQuery)
+        DispatchQueue.main.sync {
+            self.queriesRan += 1
+            print("times ran: \(self.queriesRan)")
+        }
     }
+       
+    
     
     // reads the healthStore and updates published varibles
     func fetchAllStats() {

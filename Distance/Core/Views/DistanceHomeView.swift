@@ -67,6 +67,10 @@ struct DistanceHomeView: View {
                     vm.fetchAllStats()
                 }
                 .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Text("\(vm.queriesRan)")
+                    }
+                    
                     ToolbarItem(placement: .navigationBarTrailing) {
                         
                         Menu("Add Goal") {
