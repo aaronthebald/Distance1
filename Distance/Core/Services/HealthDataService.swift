@@ -67,6 +67,9 @@ class HealthDataService: ObservableObject {
                 guard let span = self?.goalSpan else {return}
                 if miles >= span.length {
                     NotificationsManager.instance.distanceNotification(span: span, timeFrame: "Today")
+                    self?.goalDistance = ""
+                    self?.goalName = ""
+                    self?.fetchGoalSpan()
                 }
             }
             .store(in: &cancelables)
@@ -155,7 +158,6 @@ class HealthDataService: ObservableObject {
             }
             // Perform any necessary actions when the observer query detects a change
             self.fetchAllStats()
-            
             print("Observer query detected a change")
             completionHandler()
             }

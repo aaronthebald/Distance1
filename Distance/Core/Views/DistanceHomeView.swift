@@ -18,7 +18,7 @@ struct DistanceHomeView: View {
         NavigationStack {
             ZStack {
                 List {
-                    if vm.goalSpan?.name != "" {
+                    if vm.goalSpan != nil {
                         goalRow
                             .onLongPressGesture(perform: {
                                 showChooseSheet = true
@@ -58,7 +58,7 @@ struct DistanceHomeView: View {
                     
                 }
                 .sheet(isPresented: $showAddSheet, content: {
-                    NewGoalSpanView(vm: vm, showAddSheet: $showAddSheet, selectedSpan: $selectedSpan).presentationDetents([.height(350)])
+                    NewGoalSpanView(vm: vm, showAddSheet: $showAddSheet).presentationDetents([.height(350)])
                         .presentationDragIndicator(.visible)
                 })
                 

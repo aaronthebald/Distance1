@@ -10,7 +10,6 @@ import SwiftUI
 struct NewGoalSpanView: View {
     @ObservedObject var vm: HealthDataService
     @Binding var showAddSheet: Bool
-    @Binding var selectedSpan: SpanModel
     @State var custom: Bool = false
 
     var body: some View {
@@ -34,7 +33,7 @@ struct NewGoalSpanView: View {
 
 struct NewGoalSpanView_Previews: PreviewProvider {
     static var previews: some View {
-        NewGoalSpanView(vm: HealthDataService(), showAddSheet: .constant(true), selectedSpan: .constant(SpanModel(name: "Test", length: 1.5)))
+        NewGoalSpanView(vm: HealthDataService(), showAddSheet: .constant(true))
     }
 }
 extension NewGoalSpanView {
