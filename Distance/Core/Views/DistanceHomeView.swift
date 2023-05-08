@@ -13,17 +13,33 @@ struct DistanceHomeView: View {
     @State var showAddSheet: Bool = false
     @State var showChooseSheet: Bool = false
     @State var selectedSpan: SpanModel = SpanModel(name: "5 Miles", length: 5.0)
+   
     
     var body: some View {
         NavigationStack {
             ZStack {
                 List {
-                    if vm.goalSpan != nil {
+                    if vm.goalBool == true {
                         goalRow
                             .onLongPressGesture(perform: {
                                 showChooseSheet = true
                             })
                             .listRowSeparator(.hidden)
+                        
+                    } else {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.accentColor)
+                            .frame(height: 125)
+                            .overlay {
+                                VStack {
+                                    Text("Welcome!!")
+                                        .font(.largeTitle)
+                                    Text("Add a goal in the top right corner!")
+                                        .font(.headline)
+                                }
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.green)
+                            }
                         
                     }
                     
@@ -232,23 +248,28 @@ extension DistanceHomeView {
                 Text("Selected Goal")
                     .font(.title2)
                 Spacer()
+                Image(systemName: "xmark")
+                    .onTapGesture {
+                        vm.goalBool = false
+                    }
+
             }
             .foregroundColor(.green)
             Spacer()
             HStack(alignment:.bottom) {
-                Text("\(vm.goalSpan?.length.asDistanceWith2Decimals() ?? "0" )")
+                Text("\(vm.goalSpan.length.asDistanceWith2Decimals())")
                     .font(.title2)
                 Text("Miles")
                     .font(.footnote)
                 Spacer()
-                Text(vm.goalSpan?.name ?? "")
+                Text(vm.goalSpan.name)
             }
             Spacer()
-            ProgressView(value: .some(vm.todaysMiles), total: vm.goalSpan!.length) {
+            ProgressView(value: .some(vm.todaysMiles), total: vm.goalSpan.length) {
                 HStack {
                     Text("\(vm.todaysMiles.asDistanceWith2Decimals()) Miles")
                     Spacer()
-                    Text("\(vm.goalSpan!.length.asDistanceWith2Decimals())")
+                    Text("\(vm.goalSpan.length.asDistanceWith2Decimals())")
                 }
             }
             .frame(maxWidth: .infinity)

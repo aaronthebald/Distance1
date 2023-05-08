@@ -15,7 +15,8 @@ class HealthDataService: ObservableObject {
     @Published var weekMiles: Double = 0
     @Published var monthMiles: Double = 0
     @Published var yearMiles: Double = 0
-    @Published var goalSpan: SpanModel?
+    @Published var goalSpan: SpanModel
+    @Published var goalIsActive: Bool = false
     @Published var timeFrame: startOptions = .today
     @Published var weekSF: Bool = false
     @Published var monthSF: Bool = false
@@ -31,10 +32,12 @@ class HealthDataService: ObservableObject {
     var cancelables = Set<AnyCancellable>()
     @AppStorage("goalName") var goalName: String = ""
     @AppStorage("goalDistance") var goalDistance: String = ""
+    @AppStorage("goalIsActive") var goalBool: Bool = false
 
     
     
     init() {
+        goalSpan = SpanModel(name: "", length: 0.0)
         spans = SpansServices().getSpans()
         spans.sort(by: { $0.length < $1.length})
         requestAccess()
@@ -74,6 +77,7 @@ class HealthDataService: ObservableObject {
             }
             .store(in: &cancelables)
     }
+    
     
     // Function to change start paramiter
     private func setTimeFrame(start: startOptions) -> Date {

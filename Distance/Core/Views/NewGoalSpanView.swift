@@ -46,6 +46,7 @@ extension NewGoalSpanView {
                     print("Getting double failed")
                     return
                 }
+                vm.goalBool = true
                 vm.goalSpan = SpanModel(name: vm.goalName, length: distance)
                 showAddSheet = false
             } label: {

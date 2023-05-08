@@ -38,6 +38,7 @@ struct ChooseGoalView: View {
                 HStack {
                     Spacer()
                     Button {
+                        vm.goalBool = true
                         vm.goalName = selectedSpan.name
                         vm.goalDistance = "\(selectedSpan.length)"
                         vm.fetchGoalSpan()
